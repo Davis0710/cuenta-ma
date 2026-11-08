@@ -131,9 +131,10 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 const parseMonto=v=>{v=String(v||'').trim().replace(/\s|\$/g,'');if(!v)return NaN;if(v.includes(','))v=v.replace(/\./g,'').replace(',','.');else if(/^\d{1,3}(\.\d{3})+$/.test(v))v=v.replace(/\./g,'');return parseFloat(v)};
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
-/* ---------- clave y modo (vienen en el link: #k=CLAVE  o  #k=CLAVE&d=1 para David) ---------- */
-const hp=new URLSearchParams(location.hash.slice(1));
-if(hp.get('k')){ls.set('cm-key',hp.get('k'));ls.set('cm-modo',hp.get('d')==='1'?'david':'ma');history.replaceState(null,'',location.pathname+location.search)}
+/* ---------- clave y modo (vienen en el link: ?k=CLAVE  o  ?k=CLAVE&d=1 para David) ---------- */
+const qp=new URLSearchParams(location.search),hp=new URLSearchParams(location.hash.slice(1));
+const kUrl=qp.get('k')||hp.get('k');
+if(kUrl){ls.set('cm-key',kUrl);ls.set('cm-modo',(qp.get('d')||hp.get('d'))==='1'?'david':'ma')}
 const KEY=ls.get('cm-key');const DAVID=ls.get('cm-modo')==='david';
 
 /* ---------- almacenamiento: Firebase si hay config, si no modo prueba local ---------- */
